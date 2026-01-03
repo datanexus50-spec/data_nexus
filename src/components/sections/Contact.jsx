@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send, MapPin, Mail, Phone } from 'lucide-react';
+import { supabase } from '../../lib/supabaseClient';
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ const Contact = () => {
         email: '',
         message: ''
     });
+    const [status, setStatus] = useState({ type: '', message: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -16,14 +19,37 @@ const Contact = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
+        setStatus({ type: '', message: '' });
 
-        // Construct mailto link
-        const subject = `New Inquiry from ${formData.firstName} ${formData.lastName}`;
-        const body = `Name: ${formData.firstName} ${formData.lastName}%0D%0AEmail: ${formData.email}%0D%0A%0D%0AMessage:%0D%0A${formData.message}`;
+        try {
+            const { error } = await supabase
+                .from('contacts')
+                .insert([
+                    {
+                        first_name: formData.firstName,
+                        last_name: formData.lastName,
+                        email: formData.email,
+                        message: formData.message,
+                    },
+                ]);
 
-        window.location.href = `mailto:datanexus50@gmail.com?subject=${subject}&body=${body}`;
+            if (error) throw error;
+
+            setStatus({ type: 'success', message: 'Message sent successfully! We will get back to you soon.' });
+            setFormData({ firstName: '', lastName: '', email: '', message: '' });
+
+            // Clean up success message after 5 seconds
+            setTimeout(() => setStatus({ type: '', message: '' }), 5000);
+
+        } catch (error) {
+            console.error('Error sending message:', error);
+            setStatus({ type: 'error', message: 'Failed to send message. Please try again or email us directly.' });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -67,6 +93,13 @@ const Contact = () => {
 
                     <div className="bg-white p-8 rounded-2xl shadow-2xl text-slate-900">
                         <h3 className="text-2xl font-bold mb-6">Send a Message</h3>
+
+                        {status.message && (
+                            <div className={`p-4 mb-6 rounded-lg ${status.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                                {status.message}
+                            </div>
+                        )}
+
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div>
@@ -79,6 +112,7 @@ const Contact = () => {
                                         className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                                         placeholder="John"
                                         required
+                                        disabled={isSubmitting}
                                     />
                                 </div>
                                 <div>
@@ -91,6 +125,7 @@ const Contact = () => {
                                         className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                                         placeholder="Doe"
                                         required
+                                        disabled={isSubmitting}
                                     />
                                 </div>
                             </div>
@@ -105,6 +140,7 @@ const Contact = () => {
                                     className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                                     placeholder="john@company.com"
                                     required
+                                    disabled={isSubmitting}
                                 />
                             </div>
 
@@ -118,11 +154,17 @@ const Contact = () => {
                                     className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none"
                                     placeholder="Tell us about your project..."
                                     required
+                                    disabled={isSubmitting}
                                 ></textarea>
                             </div>
 
-                            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg transition-colors flex items-center justify-center gap-2">
-                                Send Message <Send size={18} />
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold py-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                            >
+                                {isSubmitting ? 'Sending...' : 'Send Message'}
+                                {!isSubmitting && <Send size={18} />}
                             </button>
                         </form>
                     </div>
