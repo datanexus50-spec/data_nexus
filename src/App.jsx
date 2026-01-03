@@ -6,7 +6,7 @@ import ServiceDetail from './pages/ServiceDetail';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/data_nexus">
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
