@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, ArrowRight, BarChart2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -16,9 +17,9 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: 'Services', href: '#services' },
-        { name: 'Reviews', href: '#reviews' },
-        { name: 'Contact', href: '#contact' },
+        { name: 'Services', href: '/#services' },
+        { name: 'Reviews', href: '/#reviews' },
+        { name: 'Contact', href: '/#contact' },
     ];
 
     return (
@@ -29,12 +30,12 @@ const Navbar = () => {
             )}
         >
             <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-                <a href="#" className="flex items-center gap-2 font-bold text-2xl text-blue-900 tracking-tight">
+                <Link to="/" className="flex items-center gap-2 font-bold text-2xl text-blue-900 tracking-tight">
                     <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
                         <BarChart2 className="w-5 h-5" />
                     </div>
                     DataNexus
-                </a>
+                </Link>
 
                 {/* Desktop Nav */}
                 <div className="hidden md:flex items-center gap-8">
@@ -43,7 +44,7 @@ const Navbar = () => {
                             {link.name}
                         </a>
                     ))}
-                    <a href="#contact" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-2 group">
+                    <a href="/#contact" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-lg shadow-blue-600/20 flex items-center gap-2 group">
                         Get Started <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                     </a>
                 </div>
@@ -74,7 +75,7 @@ const Navbar = () => {
                                     {link.name}
                                 </a>
                             ))}
-                            <a href="#contact" className="bg-blue-600 text-white px-5 py-3 rounded-lg text-center font-semibold" onClick={() => setIsMobileMenuOpen(false)}>
+                            <a href="/#contact" className="bg-blue-600 text-white px-5 py-3 rounded-lg text-center font-semibold" onClick={() => setIsMobileMenuOpen(false)}>
                                 Get Started
                             </a>
                         </div>

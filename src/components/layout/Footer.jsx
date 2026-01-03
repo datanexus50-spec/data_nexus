@@ -1,4 +1,5 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
+import { services } from '../../data/services';
 import { BarChart2, Linkedin, Twitter, Mail } from 'lucide-react';
 
 const Footer = () => {
@@ -6,6 +7,7 @@ const Footer = () => {
         <footer className="bg-slate-900 text-white py-16 border-t border-slate-800">
             <div className="container mx-auto px-6 md:px-12 grid md:grid-cols-4 gap-12">
                 <div className="col-span-1 md:col-span-2">
+                    {/* Brand section remains the same */}
                     <div className="text-2xl font-bold mb-6 flex items-center gap-2">
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
                             <BarChart2 className="w-5 h-5" />
@@ -31,11 +33,13 @@ const Footer = () => {
                 <div>
                     <h4 className="font-bold text-lg mb-6 text-white">Services</h4>
                     <ul className="space-y-3 text-slate-400">
-                        <li><a href="#" className="hover:text-blue-400 transition-colors">Advanced Analytics</a></li>
-                        <li><a href="#" className="hover:text-blue-400 transition-colors">Data Engineering</a></li>
-                        <li><a href="#" className="hover:text-blue-400 transition-colors">AI & Machine Learning</a></li>
-                        <li><a href="#" className="hover:text-blue-400 transition-colors">Financial Modeling</a></li>
-                        <li><a href="#" className="hover:text-blue-400 transition-colors">Business Intelligence</a></li>
+                        {services.map((service) => (
+                            <li key={service.id}>
+                                <Link to={`/services/${service.id}`} className="hover:text-blue-400 transition-colors">
+                                    {service.title}
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
                 </div>
 
